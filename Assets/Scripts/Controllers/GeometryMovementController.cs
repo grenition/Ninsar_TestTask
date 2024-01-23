@@ -37,6 +37,10 @@ public class GeometryMovementController : MonoBehaviour
         matrix = StringHelper.GetMatrixFromText(FileReader.ReadTextFile("example.txt"));
         InitializeCubes();
     }
+    private void Start()
+    {
+        UpdateColors();
+    }
     private void Update()
     {
         if (!Input.anyKeyDown)
@@ -52,6 +56,7 @@ public class GeometryMovementController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.A))
             direction += Vector2Int.left;
         MoveCubes(direction);
+        UpdateColors();
     }
 
     //создает и добавляет в список currentCubes сущности кубов
@@ -70,7 +75,6 @@ public class GeometryMovementController : MonoBehaviour
             Vector2Int pos = new Vector2Int(r1, Random.Range(0, matrix[r1].Length));
 
             var entity = new CubeEntity(pos, cube);
-            entity.ChangeColor(matrix[pos.y][pos.x]);
             currentCubes.Add(entity);
         }
     }
@@ -84,7 +88,14 @@ public class GeometryMovementController : MonoBehaviour
             newPosition.y = LoopNumber(newPosition.y, matrix.Length);
             newPosition.x = LoopNumber(newPosition.x, matrix[newPosition.y].Length);
             cube.Position = newPosition;
-            cube.ChangeColor(matrix[newPosition.y][newPosition.x]);
+        }
+    }
+    //обновление цветов кубов
+    private void UpdateColors()
+    {
+        foreach (CubeEntity cube in currentCubes)
+        {
+            cube.ChangeColor(matrix[cube.Position.y][cube.Position.x]);
         }
     }
     private int LoopNumber(int number, int len)
